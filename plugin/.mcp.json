@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "snowflake": {
+      "command": "uvx",
+      "args": [
+        "snowflake-labs-mcp",
+        "--service-config-file",
+        "${CLAUDE_PLUGIN_ROOT}/mcp/tools_config.yaml",
+        "--connection-name",
+        "claude-optimizer"
+      ]
+    }
+  }
+}

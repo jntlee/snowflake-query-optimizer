@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__plugin_snowflake-query-optimizer_snowflake__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/sql_allowlist_hook.py"
+          }
+        ]
+      }
+    ]
+  }
+}

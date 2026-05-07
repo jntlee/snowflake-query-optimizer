@@ -1,0 +1,5 @@
+{
+  "name": "snowflake-query-optimizer",
+  "version": "0.1.0",
+  "description": "Find the top 3 most expensive recent Snowflake queries and recommend infrastructure changes (Search Optimization Service, clustering keys, warehouse resize, Query Acceleration Service) to speed them up. Emits an Excel report. Read-only by RBAC + PreToolUse SQL allowlist hook."
+}

@@ -1,0 +1,62 @@
+# snowflake-labs-mcp service configuration (schema for v1.4+).
+#
+# Defense-in-depth tier 2: only the SQL verbs we need are permitted at the
+# MCP layer. The PreToolUse hook (.claude-plugin/hooks.json ->
+# hooks/sql_allowlist_hook.py) narrows ALTER further to three exact patterns
+# (lib/allowlist.py). Snowflake RBAC is the third tier. Each layer can deny
+# independently.
+#
+# Schema notes (changed between 1.x versions):
+#   - `query_manager` is nested under `other_services:` (not top-level).
+#   - `sql_statement_permissions:` is a LIST of single-key dicts, not a map.
+#
+# Auth (account, user, password/PAT, role, warehouse, database, schema) is
+# read from ~/.snowflake/connections.toml. The connection-name passed in
+# .mcp.json (claude-optimizer) selects which section is loaded.
+
+# Enable only the query-execution feature group. We don't need Cortex
+# Search, Cortex Analyst, semantic-view management, or object-DDL tools.
+other_services:
+  object_manager: false
+  query_manager: true
+  semantic_manager: false
+
+# SQL statements the MCP layer will accept. Order doesn't matter; each
+# entry is a one-key dict {VerbName: bool}.
+sql_statement_permissions:
+  # Read paths.
+  - Select: true
+  - With: true
+  - Describe: true
+  - Show: true
+  - Use: true
+  - Explain: true
+  # Command/Unknown are sqlglot's fallback classifications for Snowflake-
+  # specific syntax it doesn't have a dedicated AST node for: EXPLAIN USING
+  # TEXT, DESCRIBE RESULT '<qid>', some SHOW variants. Without these
+  # allowed, the MCP server rejects them with "Statement type of
+  # Command/Unknown is not allowed" even though Explain/Describe/Show are
+  # set to true above — the lookup is by sqlglot class name, not by
+  # user-friendly verb. The PreToolUse hook still gates destructive SQL
+  # by first-token allowlist regardless of how sqlglot classifies it, so
+  # this isn't a security regression.
+  - Command: true
+  - Unknown: true
+  # Everything else explicitly denied.
+  - Alter: false
+  - Insert: false
+  - Update: false
+  - Delete: false
+  - Merge: false
+  - Create: false
+  - Drop: false
+  - Truncate: false
+  - Grant: false
+  - Revoke: false
+  - Replace: false
+  - Copy: false
+  - Call: false
+  - Execute: false
+  - Put: false
+  - Get: false
+  - Undrop: false

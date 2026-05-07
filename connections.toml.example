@@ -1,0 +1,39 @@
+# Snowflake connection config used by snowflake-labs-mcp.
+#
+# This file lives at ~/.snowflake/connections.toml — NOT in the plugin
+# directory. It's shared across all your Snowflake tooling (snowsql,
+# snowflake-cli, snowflake-python-connector, this plugin).
+#
+# ─── If you ALREADY have ~/.snowflake/connections.toml ─────────────────
+# Leave your existing file alone. Just append the [claude-optimizer]
+# section below to the bottom of it. Your other connections (e.g.
+# [default], [prod], whatever you have) stay untouched — TOML allows
+# multiple named sections in one file.
+#
+# ─── If you DON'T have ~/.snowflake/connections.toml yet ───────────────
+#   1. mkdir -p ~/.snowflake
+#   2. cp connections.toml.example ~/.snowflake/connections.toml
+#   3. Fill in your real values (account, paste PAT into `password`).
+#   4. chmod 600 ~/.snowflake/connections.toml      # secrets — restrict perms
+#
+# ─── Either way ────────────────────────────────────────────────────────
+# The plugin's .mcp.json references this connection by name
+# (--connection-name claude-optimizer). The "claude-optimizer" name is
+# deliberate — pointing this plugin at your [default] connection risks
+# running discovery/EXPLAIN on every /optimize-snowflake invocation
+# against a (potentially production) Snowflake account. Keep it scoped.
+
+[claude-optimizer]
+account = "xy12345.us-east-1"
+user = "CLAUDE_SERVICE"
+role = "SERVICE_ROLE"
+warehouse = "OPTIMIZE_WH"
+database = "DEMO_DB"
+schema = "QUERY_TUNING"
+
+# Programmatic Access Token auth.
+# Generate the PAT in Snowflake first (see README §Snowflake one-time grants
+# for the network-policy + ALTER USER ... ADD PROGRAMMATIC ACCESS TOKEN sequence).
+# Snowflake returns the token value once — paste it into `password` below.
+authenticator = "programmatic_access_token"
+password = "paste-PAT-here"

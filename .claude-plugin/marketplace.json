@@ -1,0 +1,13 @@
+{
+  "name": "snowflake-query-optimizer",
+  "owner": {
+    "name": "snowflake-query-optimizer",
+    "email": "jntn.lee@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "snowflake-query-optimizer",
+      "source": "./plugin"
+    }
+  ]
+}
